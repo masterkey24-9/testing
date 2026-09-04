@@ -153,8 +153,8 @@
             <table class="w-full text-sm" style="min-width: {{ 780 + count($judulDetailTabel) * 140 }}px">
                 <thead class="sticky top-0 bg-white">
                     <tr class="text-xs text-slate-400 border-b border-slate-100">
-                        <th class="text-left font-medium pb-2 w-8">No</th>
-                        <th class="text-left font-medium pb-2">Satker</th>
+                        <th class="text-left font-medium pb-2 pr-2 sticky left-0 z-30 bg-white" style="width:36px;min-width:36px">No</th>
+                        <th class="text-left font-medium pb-2 sticky z-30 bg-white shadow-[2px_0_4px_-2px_rgba(0,0,0,0.12)]" style="left:36px;min-width:160px">Satker</th>
                         <th class="text-right font-medium pb-2">Nilai IKPA</th>
                         <th class="text-left font-medium pb-2 pl-4">Kategori</th>
                         @foreach ($judulDetailTabel as $judul)
@@ -164,14 +164,14 @@
                             </th>
                         @endforeach
                         <th class="text-left font-medium pb-2 pl-4">Update Terakhir</th>
-                        <th class="text-center font-medium pb-2">Aksi</th>
+                        <th class="text-center font-medium pb-2 sticky right-0 z-30 bg-white shadow-[-2px_0_4px_-2px_rgba(0,0,0,0.12)]">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse (($satkerPerformance ?? collect())->sortByDesc(fn ($sp) => $sp->nilai ?? -1)->values() as $sp)
-                        <tr>
-                            <td class="py-2.5 text-slate-500">{{ $loop->iteration }}</td>
-                            <td class="py-2.5 text-slate-700">{{ $sp->nama_satker }}</td>
+                        <tr class="group">
+                            <td class="py-2.5 text-slate-500 sticky left-0 z-10 bg-white group-hover:bg-slate-50" style="width:36px;min-width:36px">{{ $loop->iteration }}</td>
+                            <td class="py-2.5 text-slate-700 sticky z-10 bg-white group-hover:bg-slate-50 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.12)] whitespace-nowrap" style="left:36px;min-width:160px">{{ $sp->nama_satker }}</td>
                             <td class="py-2.5 text-right font-medium text-slate-700">
                                 {{ !is_null($sp->nilai) ? number_format($sp->nilai, 2) : '-' }}
                             </td>
@@ -188,7 +188,7 @@
                             <td class="py-2.5 pl-4 text-slate-500 text-xs">
                                 {{ optional($sp->update_terakhir)->translatedFormat('d M Y H:i') ?? '-' }}
                             </td>
-                            <td class="py-2.5">
+                            <td class="py-2.5 sticky right-0 z-10 bg-white group-hover:bg-slate-50 shadow-[-2px_0_4px_-2px_rgba(0,0,0,0.12)]">
                                 <div class="flex items-center justify-center gap-1.5">
                                     <button type="button"
                                        class="js-open-satker-modal inline-flex items-center justify-center w-8 h-8 rounded-lg bg-navy-900/5 text-navy-900 hover:bg-navy-900/10"

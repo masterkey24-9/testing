@@ -81,7 +81,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
 
     <div class="bg-white rounded-xl border border-slate-200 p-6">
-        <p class="text-sm font-medium text-slate-700 mb-4">Buat indicator baru</p>
+        <p class="text-sm font-medium text-slate-700 mb-4">INDIKATOR PELAKSANAAN ANGGARAN SATKER</p>
 
         <form method="POST" action="{{ route('indicators.store') }}" enctype="multipart/form-data" class="space-y-4" id="indicatorForm">
             @csrf
@@ -216,7 +216,7 @@
          Form ini khusus buat upload PDF resmi "Indikator Pelaksanaan Anggaran Satker"
          dari DJPb Kemenkeu -- nilainya langsung dibaca & dicocokkan ke tiap satker,
          lalu otomatis muncul di halaman Monitoring IKPA, tanpa input manual satu-satu. --}}
-    <div class="bg-white rounded-xl border border-slate-200 p-6 mt-6">
+    <div data-tour="tour-indicators-import-pdf" class="bg-white rounded-xl border border-slate-200 p-6 mt-6">
         <div class="flex items-center gap-2 mb-1">
             <i class="ti ti-file-type-pdf text-red-500"></i>
             <p class="text-sm font-medium text-slate-700">Import Nilai IKPA otomatis dari PDF DJPb</p>
@@ -288,7 +288,7 @@
     </div>
 
     {{-- ================= PENGATURAN BOBOT INDIKATOR ================= --}}
-    <div class="bg-white rounded-xl border border-slate-200 mt-6">
+    <div data-tour="tour-indicators-bobot" class="bg-white rounded-xl border border-slate-200 mt-6">
         <div class="px-6 py-4 border-b border-slate-100">
             <p class="text-sm font-medium text-slate-700">Pengaturan Bobot Indikator</p>
             <p class="text-xs mt-0.5 {{ ($totalBobot ?? 0) == 100 ? 'text-slate-400' : 'text-amber-600' }}">

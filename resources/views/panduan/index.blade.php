@@ -16,8 +16,8 @@
 @php
     $isAdmin = auth()->user()->role === 'admin';
     $daftarFitur = $isAdmin
-        ? ['Dashboard', 'Monitoring IKPA', 'Indicators', 'Peringatan Satker', 'Kelola Satker', 'Live Chat']
-        : ['Dashboard Satker', 'Dokumen Masuk', 'Live Chat'];
+        ? ['Dashboard', 'Monitoring IKPA', 'Indicators', 'Peringatan Satker', 'Kelola Satker', 'Notifikasi', 'Kirim Email', 'Live Chat']
+        : ['Dashboard Satker', 'Dokumen Masuk', 'Notifikasi', 'Kirim Email', 'Live Chat'];
 @endphp
 
 <div class="max-w-2xl">

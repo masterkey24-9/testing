@@ -63,6 +63,14 @@
                 title: 'Buat indikator baru',
                 text: 'Buat & kirim tugas ke satu atau beberapa satker sekaligus, lengkap dengan lampiran PDF/Excel kalau perlu.' },
 
+            { route: 'indicators.index', selector: '[data-tour="tour-indicators-import-pdf"]', placement: 'top',
+                title: 'Import otomatis dari PDF DJPb',
+                text: 'Upload PDF resmi "Indikator Pelaksanaan Anggaran Satker" dari DJPb Kemenkeu — sistem otomatis membaca nilai tiap satker dan langsung mengisi halaman Monitoring IKPA, tanpa input manual satu per satu.' },
+
+            { route: 'indicators.index', selector: '[data-tour="tour-indicators-bobot"]', placement: 'top',
+                title: 'Pengaturan bobot indikator',
+                text: 'Atur persentase bobot tiap jenis indikator yang dipakai untuk menghitung Nilai IKPA. Total bobot idealnya berjumlah 100% supaya perhitungan skor akurat.' },
+
             { route: 'indicators.index', selector: '[data-tour="tour-indicators-riwayat"]', placement: 'bottom',
                 title: 'Riwayat pengiriman',
                 text: 'Menampilkan semua batch pengiriman yang pernah dibuat beserta progres satker yang sudah lapor. Di halaman detail tugas juga ada tombol "Ganti lampiran" kalau file yang di-upload sebelumnya salah/rusak.' },
@@ -87,8 +95,16 @@
                 title: 'Cetak kredensial',
                 text: 'Me-reset password SEMUA akun satker sekaligus ke password acak baru, lalu bisa dicetak/di-download.' },
 
+            { route: 'satkers.index', selector: '#notifBell', placement: 'bottom',
+                title: '6. Notifikasi',
+                text: 'Ikon lonceng ini ada di semua halaman — menampilkan pemberitahuan seperti laporan baru dari satker. Badge angka muncul kalau ada notifikasi yang belum dibaca.' },
+
+            { route: 'satkers.index', selector: '#emailComposeBtn', placement: 'bottom',
+                title: '7. Kirim Email',
+                text: 'Ikon amplop ini juga ada di semua halaman — kirim email cepat ke alamat email login satker tertentu, tanpa perlu membuka aplikasi email terpisah.' },
+
             { route: 'satkers.index', selector: '[data-tour="tour-live-chat"]', placement: 'left',
-                title: '6. Live Chat',
+                title: '8. Live Chat',
                 text: 'Ikon ini ada di semua halaman — membuka percakapan langsung dengan satker mana pun untuk koordinasi cepat.' },
 
             { route: 'satkers.index', selector: null,
@@ -121,8 +137,16 @@
                 title: 'Daftar tugas',
                 text: 'Kalau ada lampiran PDF dari admin dan tugasnya belum dinilai, pratinjaunya tampil otomatis. Status tiap tugas ditandai badge: Belum ada laporan, Menunggu dinilai, Diterima, atau Perlu direvisi.' },
 
+            { route: 'user.inbox', selector: '#notifBell', placement: 'bottom',
+                title: '3. Notifikasi',
+                text: 'Ikon lonceng ini ada di semua halaman — menampilkan pemberitahuan seperti tugas baru atau peringatan dari admin. Badge angka muncul kalau ada notifikasi yang belum dibaca.' },
+
+            { route: 'user.inbox', selector: '#emailComposeBtn', placement: 'bottom',
+                title: '4. Kirim Email',
+                text: 'Ikon amplop ini juga ada di semua halaman — kirim email cepat ke alamat email login admin, tanpa perlu membuka aplikasi email terpisah.' },
+
             { route: 'user.inbox', selector: '[data-tour="tour-live-chat"]', placement: 'left',
-                title: '3. Live Chat',
+                title: '5. Live Chat',
                 text: 'Ikon ini ada di semua halaman — untuk koordinasi langsung dengan admin.' },
 
             { route: 'user.inbox', selector: null,
