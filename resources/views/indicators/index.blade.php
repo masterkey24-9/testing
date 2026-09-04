@@ -211,6 +211,48 @@
 
     </div>
 
+    {{-- ================= IMPORT OTOMATIS DARI PDF DJPb ================= --}}
+    {{-- Beda dari form "Buat indicator baru" di atas (itu buat kirim TUGAS ke satker).
+         Form ini khusus buat upload PDF resmi "Indikator Pelaksanaan Anggaran Satker"
+         dari DJPb Kemenkeu -- nilainya langsung dibaca & dicocokkan ke tiap satker,
+         lalu otomatis muncul di halaman Monitoring IKPA, tanpa input manual satu-satu. --}}
+    <div class="bg-white rounded-xl border border-slate-200 p-6 mt-6">
+        <div class="flex items-center gap-2 mb-1">
+            <i class="ti ti-file-type-pdf text-red-500"></i>
+            <p class="text-sm font-medium text-slate-700">Import Nilai IKPA otomatis dari PDF DJPb</p>
+        </div>
+        <p class="text-xs text-slate-400 mb-4">
+            Upload PDF resmi "Indikator Pelaksanaan Anggaran Satker" dari DJPb Kemenkeu. Sistem akan membaca
+            nilai tiap satker langsung dari file ini dan mengisi halaman Monitoring IKPA secara otomatis.
+        </p>
+
+        <form method="POST" action="{{ route('indicators.importPdf') }}" enctype="multipart/form-data" class="flex flex-col sm:flex-row sm:items-end gap-4">
+            @csrf
+
+            <div class="w-full sm:w-48">
+                <label for="import_periode" class="block text-sm font-medium text-slate-700 mb-1.5">Periode</label>
+                <input type="month" id="import_periode" name="periode" value="{{ old('periode', now()->format('Y-m')) }}" required
+                       class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-navy-800">
+            </div>
+
+            <div class="flex-1">
+                <label for="import_file_pdf" class="block text-sm font-medium text-slate-700 mb-1.5">File PDF DJPb</label>
+                <input type="file" id="import_file_pdf" name="file_pdf" accept="application/pdf" required
+                       class="w-full text-sm text-slate-600 file:mr-3 file:h-11 file:px-4 file:rounded-lg file:border-0 file:bg-slate-100 file:text-slate-700 file:text-sm file:font-medium hover:file:bg-slate-200 border border-slate-300 rounded-lg">
+            </div>
+
+            <button type="submit"
+                    class="h-11 px-5 rounded-lg bg-navy-900 hover:bg-navy-800 text-white text-sm font-medium transition shrink-0">
+                Import &amp; isi Monitoring IKPA
+            </button>
+        </form>
+
+        <p class="text-xs text-slate-400 mt-3">
+            Satker yang namanya tidak berhasil dicocokkan otomatis akan ditampilkan setelah proses import
+            selesai, supaya bisa dicek manual.
+        </p>
+    </div>
+
     {{-- ================= INDIKATOR IKPA (kartu per jenis, bulan berjalan) ================= --}}
     <div class="mt-6">
         <p class="text-sm font-medium text-slate-700">Indikator IKPA</p>

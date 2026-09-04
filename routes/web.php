@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::get('/indicators', [IndicatorController::class, 'index'])->name('indicators.index');
         Route::post('/indicators', [IndicatorController::class, 'store'])->name('indicators.store');
+        Route::post('/indicators/import-pdf', [IndicatorController::class, 'importPdf'])->name('indicators.importPdf');
         Route::get('/indicators/riwayat', [IndicatorController::class, 'riwayat'])->name('indicators.riwayat');
         Route::get('/indicators/riwayat/{batchId}', [IndicatorController::class, 'riwayatDetail'])->name('indicators.riwayat.detail');
         Route::get('/indicators/{id}', [IndicatorController::class, 'show'])->name('indicators.show');

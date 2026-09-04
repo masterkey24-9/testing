@@ -3,13 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Indicator;
+use App\Models\IndicatorResult;
 use App\Models\IndikatorBobot;
 use App\Models\Satker;
+use App\Services\IkpaPdfParserService;
+use App\Services\SatkerNameMatcher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class IndicatorController extends Controller
 {
+    protected IkpaPdfParserService $pdfParser;
+
+    public function __construct(IkpaPdfParserService $pdfParser)
+    {
+        $this->pdfParser = $pdfParser;
+    }
+
     /**
      * Daftar semua indicator (khusus admin), dipakai di resources/views/indicators/index.blade.php.
      */
@@ -283,5 +296,117 @@ class IndicatorController extends Controller
                 'icon' => $status['icon'],
             ];
         });
+    }
+
+    /**
+     * Import otomatis Nilai IKPA per satker dari PDF resmi DJPb Kemenkeu
+     * ("Indikator Pelaksanaan Anggaran Satker").
+     *
+     * Alurnya:
+     *  1. PDF diparse -> per baris satker dapat nama satker + nilai mentah (0-100)
+     *     tiap jenis indikator (lihat App\Services\IkpaPdfParserService).
+     *  2. Nama satker di PDF dicocokkan ke record Satker aplikasi ini (lihat
+     *     App\Services\SatkerNameMatcher, karena tabel satkers belum punya kolom
+     *     kode DJPb, jadi pencocokan lewat nama).
+     *  3. Untuk tiap satker yang cocok, dibuat/diupdate Indicator (satu per jenis
+     *     indikator per periode) + IndicatorResult (nilai mentahnya) -- setelah ini
+     *     langsung muncul di halaman Monitoring IKPA tanpa perlu input manual lagi.
+     *
+     * Baris yang satkernya TIDAK berhasil dicocokkan otomatis tidak disimpan, dan
+     * namanya dilaporkan balik ke admin supaya bisa dicek/tambahkan sinonimnya di
+     * App\Services\SatkerNameMatcher::SINONIM.
+     */
+    public function importPdf(Request $request)
+    {
+        $validated = $request->validate([
+            'periode' => 'required|date_format:Y-m',
+            'file_pdf' => 'required|file|mimes:pdf|max:20480',
+        ], [
+            'file_pdf.required' => 'Pilih file PDF "Indikator Pelaksanaan Anggaran Satker" dari DJPb.',
+            'file_pdf.mimes' => 'File harus berformat PDF.',
+        ]);
+
+        $file = $request->file('file_pdf');
+        $pathRelatif = $file->store('indicators/pdf-import', 'public');
+        $pathAsli = Storage::disk('public')->path($pathRelatif);
+
+        try {
+            $barisPdf = $this->pdfParser->parsePdf($pathAsli);
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Gagal membaca file PDF: '.$e->getMessage());
+        }
+
+        if (empty($barisPdf)) {
+            return redirect()->back()->with('error', 'Tidak ada baris satker yang berhasil dibaca dari PDF ini. Pastikan formatnya sama seperti laporan resmi DJPb "Indikator Pelaksanaan Anggaran Satker".');
+        }
+
+        $periode = $validated['periode'].'-01';
+        $satkers = Satker::all();
+        $batchId = (string) Str::uuid();
+        $jenisIndikatorBaku = config('sikoor.jenis_indikator', []);
+
+        $jumlahSatkerCocok = 0;
+        $jumlahNilaiTersimpan = 0;
+        $tidakCocok = [];
+
+        DB::beginTransaction();
+        try {
+            foreach ($barisPdf as $baris) {
+                $satker = SatkerNameMatcher::match($baris['nama_satker'], $satkers);
+
+                if (! $satker) {
+                    $tidakCocok[] = $baris['nama_satker'];
+                    continue;
+                }
+
+                $jumlahSatkerCocok++;
+
+                foreach ($baris['nilai'] as $judul => $nilaiMentah) {
+                    if (! in_array($judul, $jenisIndikatorBaku, true)) {
+                        continue;
+                    }
+
+                    $indicator = Indicator::firstOrCreate(
+                        [
+                            'satker_id' => $satker->id,
+                            'judul' => $judul,
+                            'periode' => $periode,
+                        ],
+                        [
+                            'batch_id' => $batchId,
+                            'deskripsi' => 'Diimpor otomatis dari PDF DJPb: '.$file->getClientOriginalName(),
+                            'file_pdf' => $pathRelatif,
+                        ]
+                    );
+
+                    IndicatorResult::updateOrCreate(
+                        [
+                            'indicator_id' => $indicator->id,
+                            'satker_id' => $satker->id,
+                        ],
+                        [
+                            'nilai' => round($nilaiMentah, 2),
+                        ]
+                    );
+
+                    $jumlahNilaiTersimpan++;
+                }
+            }
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data: '.$e->getMessage());
+        }
+
+        $pesan = "Import selesai: {$jumlahSatkerCocok} satker cocok, {$jumlahNilaiTersimpan} nilai indikator tersimpan untuk periode {$validated['periode']}.";
+
+        if (! empty($tidakCocok)) {
+            $daftar = implode('; ', array_unique($tidakCocok));
+            $pesan .= " Satker yang TIDAK ditemukan padanannya (perlu dicek manual di App\\Services\\SatkerNameMatcher): {$daftar}.";
+        }
+
+        return redirect()->route('indicators.index')->with('success', $pesan);
     }
 }
