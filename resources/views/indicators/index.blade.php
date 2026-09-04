@@ -86,7 +86,7 @@
         <form method="POST" action="{{ route('indicators.store') }}" enctype="multipart/form-data" class="space-y-4" id="indicatorForm">
             @csrf
 
-            <div>
+            <!-- <div>
                 <label for="judul" class="block text-sm font-medium text-slate-700 mb-1.5">Pilih Indikator</label>
                 <select id="judul" name="judul" required
                         class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-navy-800">
@@ -96,7 +96,7 @@
                     @endforeach
                 </select>
                 <p class="text-xs text-slate-400 mt-1">Jenis indikator sudah baku, supaya konsisten dengan data di halaman Monitoring.</p>
-            </div>
+            </div> -->
 
             <div>
                 <label for="periode" class="block text-sm font-medium text-slate-700 mb-1.5">Periode</label>
